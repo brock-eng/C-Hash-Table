@@ -72,18 +72,47 @@ static int htGetHash(const char* string, const int numBuckets, const int attempt
    return (hashA + (attempt * (hashB + 1))) % numBuckets;
 }
 
+// Insert a new key/value pair
 void htAPIInsert(htHashTable* ht, const char* key, const char* value)
 {
-
+   htItem* item = htNewItem(key, value);
+   int attempt = 0;
+   int index = htGetHash(item->key, ht->size, attempt);
+   htItem* curItem = ht->items[index];
+   attempt++;
+   while (curItem != NULL) // Collision handling
+   {
+      index = htGetHash(item->key, ht->size, attempt);
+      curItem = ht->items[index];
+      attempt++;
+   }
+   ht->items[index] = item;
+   ht->count++;
+   return;
 }
 
+// Return the value for a given key
 char* htAPISearch(htHashTable* ht, const char* key)
 {
-   char string[] = "fart";
-   return string;
+   int attempt = 0;
+   int index = htGetHash(key, ht->size, attempt);
+   htItem* item = ht->items[index];
+   attempt++;
+   while (item != NULL)
+   {
+      if (strcmp(item->key, key) == false)
+      {
+         return item->value;
+      }
+      index = htGetHash(key, ht->size, attempt);
+      item = ht->items[index];
+      attempt++;
+   }
+   return NULL;
 }
 
+// Mark a given key as 'deleted'
 void htAPIDelete(htHashTable* ht, const char* key)
 {
-   printf("fart\n\t\t\t\t\t");
+
 }
