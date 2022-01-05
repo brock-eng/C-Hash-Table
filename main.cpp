@@ -5,5 +5,6 @@ int main()
 {
    htHashTable* ht = htNewHashTable();
    htDelHashTable(ht);
+   htAPIDelete(ht, "fart");
    printf("Hello world.");
 }
