@@ -8,7 +8,8 @@
 // Hash table size
 const int SIZE = 53;
 
-const static htItem HT_DELETED = { NULL, NULL };
+static htItem HT_DELETED = { NULL, NULL };
+
 
 static htItem* htNewItem(const char* _key, const char* _value)
 {
@@ -114,5 +115,22 @@ char* htAPISearch(htHashTable* ht, const char* key)
 // Mark a given key as 'deleted'
 void htAPIDelete(htHashTable* ht, const char* key)
 {
-
+   int attempt = 0;
+   int index = htGetHash(key, ht->size, attempt);
+   htItem* item = ht->items[index];
+   attempt++;
+   while (item != NULL)
+   {
+      if (strcmp(item->key, key) == true && item != &HT_DELETED)
+      {
+         htDelItem(item);
+         ht->items[index] = &HT_DELETED;
+         return;
+      }
+      index = htGetHash(key, ht->size, attempt);
+      item = ht->items[index];
+      attempt++;
+   }
+   ht->count--;
+   return;
 }
