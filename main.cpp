@@ -5,6 +5,11 @@ int main()
 {
    htHashTable* ht = htNewHashTable();
    htDelHashTable(ht);
-   htAPIDelete(ht, "fart");
-   printf("Hello world.");
+   htAPIInsert(ht, "Color", "Red");
+   htAPIInsert(ht, "Material", "Steel");
+   htAPIInsert(ht, "Profession", "Painter");
+
+   printf(htAPISearch(ht, "Color"));
+   printf(htAPISearch(ht, "Material"));
+   printf(htAPISearch(ht, "Profession"));
 }
