@@ -1,2 +1,2 @@
 # C-Hash-Table
-Hash table made from scratch in C (C++)
+Hash table made from scratch using exclusively C code.
