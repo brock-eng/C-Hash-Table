@@ -16,9 +16,10 @@ static htItem* htNewItem(const char* _key, const char* _value)
    htItem* item = (htItem*)malloc(sizeof(htItem));
    item->key = _strdup(_key);
    item->value = _strdup(_value);
+   return item;
 }
 
-htHashTable* htNewHashTable()
+htHashTable* htAPICreate()
 {
    htHashTable* ht= (htHashTable*)malloc(sizeof(htHashTable));
 
@@ -35,7 +36,7 @@ static void htDelItem(htItem* item)
    free(item);
 }
 
-void htDelHashTable(htHashTable* ht)
+void htAPIDelTable(htHashTable* ht)
 {
    for (int i = 0; i < ht->size; i++)
    {
@@ -83,6 +84,15 @@ void htAPIInsert(htHashTable* ht, const char* key, const char* value)
    attempt++;
    while (curItem != NULL) // Collision handling
    {
+      if (curItem != &HT_DELETED)
+      {
+         if (strcmp(curItem->key, key) == 0)
+         {
+            htDelItem(curItem);
+            ht->items[index] = item;
+            return;
+         }
+      }
       index = htGetHash(item->key, ht->size, attempt);
       curItem = ht->items[index];
       attempt++;
@@ -101,7 +111,7 @@ char* htAPISearch(htHashTable* ht, const char* key)
    attempt++;
    while (item != NULL)
    {
-      if (strcmp(item->key, key) == false)
+      if (strcmp(item->key, key) == 0 && item != &HT_DELETED)
       {
          return item->value;
       }
@@ -121,7 +131,7 @@ void htAPIDelete(htHashTable* ht, const char* key)
    attempt++;
    while (item != NULL)
    {
-      if (strcmp(item->key, key) == true && item != &HT_DELETED)
+      if (strcmp(item->key, key) == 0 && item != &HT_DELETED)
       {
          htDelItem(item);
          ht->items[index] = &HT_DELETED;
